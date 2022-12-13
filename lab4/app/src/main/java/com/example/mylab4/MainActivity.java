@@ -2,6 +2,8 @@ package com.example.mylab4;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -11,7 +13,7 @@ import android.widget.Toast;
 public class MainActivity extends AppCompatActivity {
 
     DatabaseHelper peopleDB;
-    Button btnAddData;
+    Button btnAddData, btnViewData;
     EditText etName, etEmail, etTvShow;
 
     @Override
@@ -25,8 +27,10 @@ public class MainActivity extends AppCompatActivity {
         etEmail = findViewById(R.id.etNewEmail);
         etTvShow = findViewById(R.id.etNewTVShow);
         btnAddData = findViewById(R.id.btnAddData);
+        btnViewData = findViewById(R.id.btnViewData);
 
         AddData();
+        ViewData();
     }
 
     public void AddData() {
@@ -41,5 +45,36 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    public void ViewData() {
+        btnViewData.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Cursor data = peopleDB.ShowData();
+                if (data.getCount() == 0) {
+                    Toast.makeText(MainActivity.this, "No Data Found", Toast.LENGTH_LONG).show();
+                } else {
+                    StringBuffer buffer = new StringBuffer();
+                    while (data.moveToNext()) {
+                        buffer.append("ID: " + data.getString(0) + "\n");
+                        buffer.append("Name: " + data.getString(1) + "\n");
+                        buffer.append("Email: " + data.getString(2) + "\n");
+                        buffer.append("Favorite TV Show: " + data.getString(3) + "\n");
+
+                        display("Your stored data", buffer.toString());
+                    }
+                }
+            }
+        });
+    }
+
+    public void display (String title, String message) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(true);
+        builder.setTitle(title);
+        builder.setMessage(message);
+        builder.show();
+
     }
 }
