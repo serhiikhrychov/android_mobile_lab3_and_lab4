@@ -2,6 +2,7 @@ package com.example.mylab4;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -12,20 +13,22 @@ import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
-    DatabaseHelper peopleDB;
+    DatabaseHelper filmDB;
     Button btnAddData, btnViewData;
-    EditText etName, etEmail, etTvShow;
+    EditText etNewTitle, etNewDescription, etNewYear, etFilmRate;
 
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        peopleDB = new DatabaseHelper(this);
+        filmDB = new DatabaseHelper(this);
 
-        etName = findViewById(R.id.etNewName);
-        etEmail = findViewById(R.id.etNewEmail);
-        etTvShow = findViewById(R.id.etNewTVShow);
+        etNewTitle = findViewById(R.id.etNewTitle);
+        etNewDescription = findViewById(R.id.etNewDescription);
+        etNewYear = findViewById(R.id.etNewYear);
+        etFilmRate = findViewById(R.id.etFilmRate);
         btnAddData = findViewById(R.id.btnAddData);
         btnViewData = findViewById(R.id.btnViewData);
 
@@ -37,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
         btnAddData.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                boolean isInserted = peopleDB.addData(etName.getText().toString(), etEmail.getText().toString(), etTvShow.getText().toString());
+                boolean isInserted = filmDB.addData(etNewTitle.getText().toString(), etNewDescription.getText().toString(), etNewYear.getText().toString(), etFilmRate.getText().toString());
                 if (isInserted = true) {
                     Toast.makeText(MainActivity.this, "Data Inserted", Toast.LENGTH_LONG).show();
                 } else {
@@ -51,16 +54,17 @@ public class MainActivity extends AppCompatActivity {
         btnViewData.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Cursor data = peopleDB.ShowData();
+                Cursor data = filmDB.ShowData();
                 if (data.getCount() == 0) {
                     Toast.makeText(MainActivity.this, "No Data Found", Toast.LENGTH_LONG).show();
                 } else {
                     StringBuffer buffer = new StringBuffer();
                     while (data.moveToNext()) {
                         buffer.append("ID: " + data.getString(0) + "\n");
-                        buffer.append("Name: " + data.getString(1) + "\n");
-                        buffer.append("Email: " + data.getString(2) + "\n");
-                        buffer.append("Favorite TV Show: " + data.getString(3) + "\n");
+                        buffer.append("Film title: " + data.getString(1) + "\n");
+                        buffer.append("Film description: " + data.getString(2) + "\n");
+                        buffer.append("Film year: " + data.getString(3) + "\n");
+                        buffer.append("Film rate: " + data.getString(4) + "\n");
 
                         display("Your stored data", buffer.toString());
                     }
